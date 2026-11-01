@@ -2,8 +2,8 @@
 
 A multi-class classification project that compares five machine-learning classifiers on the UCI **Predict Students' Dropout and Academic Success** dataset. The project includes a reproducible training pipeline, saved model artifacts, evaluation results, and an interactive Streamlit application.
 
-> **Live Streamlit app:** <PASTE_STREAMLIT_URL>
-> **GitHub repository:** <PASTE_GITHUB_URL>
+> **Live Streamlit app:** [https://2026aj05412-nsp1-ml-assignment-2.streamlit.app/](https://2026aj05412-nsp1-ml-assignment-2.streamlit.app/)  
+> **GitHub repository:** [https://github.com/hemxnth03/NSP1-ML-Assignment-2](https://github.com/hemxnth03/NSP1-ML-Assignment-2)
 
 ## a. Problem statement
 
@@ -60,7 +60,7 @@ The 36 input features cover demographics and student background, application and
 
 ## c. GitHub repository
 
-**Repository link:** <PASTE_GITHUB_URL>
+**Repository link:** [https://github.com/hemxnth03/NSP1-ML-Assignment-2](https://github.com/hemxnth03/NSP1-ML-Assignment-2)
 
 The repository contains the source code, dependency list, saved classifiers, model metadata, labelled hold-out test data, and experiment results.
 
@@ -166,6 +166,8 @@ The test-set supports are 284 Dropout, 159 Enrolled, and 442 Graduate records. E
 | **Overall winner for this dataset** | Logistic Regression is selected as the overall winner because it achieved the highest scores in five out of the six evaluation metrics. SVM performed very closely, particularly in AUC, where it achieved a slightly higher score. The difference between the two models is small, so neither model should be considered significantly superior based on this single test split. Logistic Regression is preferred because of its slightly better overall results and simpler model structure. |
 
 ## e. Streamlit application
+
+**Live app:** [https://2026aj05412-nsp1-ml-assignment-2.streamlit.app/](https://2026aj05412-nsp1-ml-assignment-2.streamlit.app/)
 
 The Streamlit app loads the five saved `.joblib` classifiers and evaluates a labelled CSV uploaded by the user. It does not train or refit a model on uploaded data.
 
