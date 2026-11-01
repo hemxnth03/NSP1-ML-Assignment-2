@@ -1,0 +1,17 @@
+# Python cache and compiled files
+__pycache__/
+*.py[cod]
+*.pyc
+
+# Original training dataset (download from UCI for retraining)
+data.csv
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Local Python environments
+.venv/
+venv/
+
+check_repo.py
