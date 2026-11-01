@@ -93,28 +93,74 @@ The original `data.csv` is used by `train_models.py` for model training and is e
 
 ### Reproducing the experiment
 
-The reported training run was executed inside the project virtual environment using **Python 3.15.1**, confirmed with `python --version`. The dependency versions used by the run are pinned in `requirements.txt`.
+The reported training run was executed inside the project virtual environment using **Python 3.15.1**, confirmed with `python --version`. The dependency versions used by the run are pinned in `requirements.txt`. The pinned `numpy` release needs **Python 3.12 or newer**, so check the interpreter version before installing. The steps below work on Windows and on Linux/macOS, including the BITS Virtual Lab (Linux).
 
-In the activated project environment, check the Python version and install the pinned packages:
+**1. Get the code**
+
+```bash
+git clone https://github.com/hemxnth03/NSP1-ML-Assignment-2.git
+cd NSP1-ML-Assignment-2
+```
+
+If `git` is not installed (for example, on the Linux lab), install it with `conda install -y git`, or download the repository as a ZIP instead:
+
+```bash
+wget -O project.zip https://github.com/hemxnth03/NSP1-ML-Assignment-2/archive/refs/heads/main.zip
+unzip project.zip
+cd NSP1-ML-Assignment-2-main
+```
+
+If `unzip` is also missing, use `python3 -m zipfile -e project.zip .` instead of the `unzip` line.
+
+**2. Create and activate a virtual environment**
+
+Windows (PowerShell):
 
 ```powershell
 python --version
-# Python 3.15.1
+python -m venv .venv
+.venv\Scripts\Activate.ps1
+```
+
+Linux / macOS (including the BITS Virtual Lab):
+
+```bash
+python3 --version          # must print 3.12 or newer
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+If the Linux machine's default Python is older than 3.12 and Conda is available, create a Conda environment with a newer Python instead of using `venv`:
+
+```bash
+conda create -n student-outcome python=3.12 -y
+conda activate student-outcome
+```
+
+**3. Install the pinned packages** (same command on every operating system)
+
+```bash
 python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
 ```
 
-Place the semicolon-separated UCI `data.csv` file in the project root, then run:
+**4. Add the dataset and train**
 
-```powershell
+Place the semicolon-separated UCI `data.csv` file in the project root. On a remote Linux machine, upload it through the lab's file browser or copy it with `scp`. Then run:
+
+```bash
 python train_models.py
 ```
 
-To start the app locally:
+This retrains the five models and rewrites `model/`, `results/`, `test_data.csv` and `requirements.txt` in the project folder.
 
-```powershell
+**5. Start the app locally**
+
+```bash
 streamlit run app.py
 ```
+
+On a headless Linux server, use `streamlit run app.py --server.headless true --server.port 8501`. A browser can only reach it if the port is forwarded (for example, over SSH); otherwise use the deployed app linked above.
 
 ## d. Models used
 
