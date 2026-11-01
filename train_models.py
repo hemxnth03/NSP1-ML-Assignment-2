@@ -1,6 +1,5 @@
 """Train, tune, evaluate and save the five classifiers.
 
-Run once (on the BITS Virtual Lab):   python train_models.py
 
 Outputs
   model/*.joblib          one fitted sklearn Pipeline per classifier + meta.joblib
