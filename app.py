@@ -292,7 +292,9 @@ with tab_one:
         plt.close(fig)
     with right:
         st.markdown('<div class="label">Classification report</div>', unsafe_allow_html=True)
-        rep_df = pd.DataFrame(rep).T.rename(columns={"f1-score": "f1"})
+        rep_df = pd.DataFrame({k: v for k, v in rep.items() if k != "accuracy"}).T
+        rep_df = rep_df.rename(columns={"f1-score": "f1"})
+        rep_df["support"] = rep_df["support"].astype(int)
         st.dataframe(rep_df.round(3))
 
 # ---- tab 2: comparison -------------------------------------------------------
