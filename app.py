@@ -36,14 +36,14 @@ st.markdown(
     f"""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap');
-.block-container {{ padding-top: 2.4rem; max-width: 1180px; }}
+.block-container {{ padding-top: 3.4rem; max-width: 1180px; }}
 #MainMenu, footer {{ visibility: hidden; }}
 h1, h2, h3, .serif {{ font-family: 'Newsreader', Georgia, 'Times New Roman', serif !important;
                       letter-spacing: -0.01em; color: {INK}; }}
 .eyebrow {{ font-size: .72rem; letter-spacing: .16em; text-transform: uppercase; color: {GOLD};
-            font-weight: 600; margin-bottom: .35rem; }}
+            font-weight: 600; margin-bottom: .6rem; line-height: 1.5; }}
 .hero-title {{ font-family: 'Newsreader', Georgia, serif; font-size: 2.7rem; font-weight: 600;
-               line-height: 1.1; color: {INK}; margin: 0 0 .6rem 0; }}
+               line-height: 1.2; color: {INK}; margin: 0 0 .7rem 0; padding-top: .15rem; }}
 .hero-sub {{ color: {MUTED}; font-size: 1.02rem; max-width: 52rem; line-height: 1.55; margin-bottom: .4rem; }}
 .rule {{ height: 1px; background: linear-gradient(90deg, {GOLD}, {LINE} 40%, transparent);
          border: 0; margin: 1.1rem 0 1.4rem 0; }}
