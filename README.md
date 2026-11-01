@@ -70,6 +70,8 @@ The repository contains the source code, dependency list, saved classifiers, mod
 project-folder/
 ├── .streamlit/
 │   └── config.toml            Streamlit theme and client settings
+├── .devcontainer/
+│   └── devcontainer.json     Development environment configuration
 ├── model/
 │   ├── logistic_regression.joblib
 │   ├── decision_tree.joblib
@@ -93,7 +95,9 @@ The original `data.csv` is used by `train_models.py` for model training and is e
 
 ### Reproducing the experiment
 
-The reported training run was executed inside the project virtual environment using **Python 3.15.1**, confirmed with `python --version`. The dependency versions used by the run are pinned in `requirements.txt`. The pinned `numpy` release needs **Python 3.12 or newer**, so check the interpreter version before installing. The steps below work on Windows and on Linux/macOS, including the BITS Virtual Lab (Linux).
+The project is compatible with **Python 3.12 and newer**. The required dependency versions are pinned in requirements.txt to support consistent installation across compatible environments. Before installing the dependencies, verify that the Python interpreter meets the minimum version requirement. The instructions below cover Windows and Linux/macOS, including the BITS Virtual Lab.
+
+For the closest reproduction of the reported experiment, use the same Python version and pinned dependency versions. Running under another compatible Python version may introduce minor implementation or numerical differences.
 
 **1. Get the code**
 
@@ -200,16 +204,30 @@ The following hyperparameters were selected by five-fold cross-validation on the
 
 The test-set supports are 284 Dropout, 159 Enrolled, and 442 Graduate records. Enrolled is the most difficult class for all five models.
 
+### Enrolled class in the confusion matrices
+
+The table shows how the 159 actual Enrolled students were classified by each model, together with Enrolled precision and the number of correctly classified Graduate students.
+
+| ML Model | Enrolled predicted as Dropout | Enrolled predicted as Enrolled | Enrolled predicted as Graduate | Total predicted as Enrolled | Enrolled precision | Graduate correct (of 442) |
+|---|---:|---:|---:|---:|---:|---:|
+| Logistic Regression | 30 | **69** | 60 | 118 | **0.585** | 410 |
+| Decision Tree | 28 | 66 | 65 | 140 | 0.471 | 405 |
+| KNN | 27 | 44 | **88** | 79 | 0.557 | 408 |
+| Naive Bayes | 24 | 51 | 84 | 117 | 0.436 | 367 |
+| Support Vector Machine | 32 | 67 | 60 | 123 | 0.545 | **413** |
+
+For every model, the largest share of misclassified Enrolled students is predicted as Graduate rather than Dropout.
+
 ### Observations on model performance
 
 | ML Model Name | Observation about model performance |
 |---|---|
-| **Logistic Regression** | Logistic Regression achieved the best overall results, with 79.21% accuracy, 0.7248 macro F1-score and 0.6560 MCC. It also recorded the highest macro precision and macro recall among the five models. It correctly identified 69 out of 159 Enrolled students, although this class remains relatively difficult to predict. Overall, it gave the strongest results on most of the evaluation metrics. |
-| **Decision Tree** | Decision Tree achieved 75.37% accuracy and a macro F1-score of 0.6822. Its performance was lower than Logistic Regression and SVM but better than KNN and Naive Bayes on all six metrics. One advantage is that its decision-making process is easier to interpret. However, using integer-coded categorical features as raw numerical values may affect how the tree creates its splits. |
-| **KNN** | KNN achieved 72.43% accuracy and a macro F1-score of 0.6343. Although categorical encoding and feature scaling were applied, its performance was comparatively lower. It correctly identified only 44 out of 159 Enrolled students, giving it the lowest recall for this class. This suggests that the distance-based approach was less effective for distinguishing between the three student outcomes. |
-| **Naive Bayes** | Gaussian Naive Bayes recorded the lowest accuracy (69.72%) and MCC (0.4955) among the five models. Its macro F1-score was also the lowest at 0.6241. One possible reason is that the Gaussian distribution and feature-independence assumptions may not adequately represent this dataset. The use of raw integer-coded categorical features is another limitation. |
-| **Support Vector Machine** | SVM achieved 78.64% accuracy and a macro F1-score of 0.7155. It recorded the highest AUC of 0.8982, indicating good class discrimination. Its performance was close to Logistic Regression, although it scored slightly lower on accuracy, precision, recall, F1-score and MCC. It also achieved the highest recall for the Graduate class at 0.9344. |
-| **Overall winner for this dataset** | Logistic Regression is selected as the overall winner because it achieved the highest scores in five out of the six evaluation metrics. SVM performed very closely, particularly in AUC, where it achieved a slightly higher score. The difference between the two models is small, so neither model should be considered significantly superior based on this single test split. Logistic Regression is preferred because of its slightly better overall results and simpler model structure. |
+| **Logistic Regression** | Highest overall performance: 79.21% accuracy (701 of 885 correct), macro F1 of 0.7248 and MCC of 0.6560, with the highest macro precision and recall. It correctly identifies 69 of 159 Enrolled students and has the highest Enrolled precision (0.585), although 60 Enrolled students are still classified as Graduate. Its cross-validation macro F1 (0.6985) is reasonably close to its test macro F1, with no obvious generalisation gap in this experiment. One possible reason for its strong result is that, after one-hot encoding and scaling, the academic features separate the classes reasonably well with a largely linear boundary; this was not tested separately. |
+| **Decision Tree** | 75.37% accuracy and 0.6822 macro F1. It performs better than KNN and Naive Bayes on all six metrics, but below Logistic Regression and SVM. Its depth of 7 and minimum leaf size of 15 control model complexity, and the CV macro F1 (0.6784) and test macro F1 (0.6822) are close, so there is no obvious generalisation gap. It predicts Enrolled 140 times but only 66 of these are correct, giving relatively low Enrolled precision (0.471). Its main advantage is interpretability. Integer-coded categorical features are treated as ordered numbers, which may affect how the tree creates its splits. |
+| **KNN** | 72.43% accuracy and 0.6343 macro F1. It correctly identifies only 44 of 159 Enrolled students (recall 0.277, the lowest of the five), and 88 are classified as Graduate. It also predicts Graduate 570 times although there are only 442 actual Graduate records, which lowers Graduate precision to 0.716. One possible explanation is that one-hot encoding introduces additional dimensions, which may affect how distances between observations are calculated; this was not tested separately. The selected k=7 is the smallest value in the search grid, so smaller values were not evaluated and could be investigated in future experiments. |
+| **Naive Bayes** | Lowest performance on all six metrics, with 69.72% accuracy, 0.6241 macro F1 and 0.4955 MCC. It correctly identifies 367 of 442 Graduate students, the lowest Graduate recall of the five models. Its Gaussian likelihood and conditional-independence assumptions may not suit the mixed feature types, and the first- and second-semester academic features may be related, which could conflict with the independence assumption. Integer-coded categorical features are also treated as numeric values. It identifies slightly more Enrolled students than KNN (51 vs 44). |
+| **Support Vector Machine** | 78.64% accuracy and 0.7155 macro F1, close to Logistic Regression. It achieves the highest AUC (0.8982), although the difference from Logistic Regression (0.8958) is only 0.0024. It also records the highest Graduate recall (413 of 442) and the highest Dropout precision (0.844). Its Enrolled recall (67 of 159) is slightly below Logistic Regression (69 of 159), a difference of two students. The selected C=8 is the upper limit of the tested grid, so larger values were not evaluated. |
+| **Overall winner for this dataset** | **Logistic Regression** is the practical winner: it leads on five of the six metrics and correctly identifies the most Enrolled students. SVM is a close second, and Logistic Regression correctly classifies only five more of the 885 test records (701 vs 696). Because these results come from a single hold-out split, the difference should not be interpreted as proof of general superiority. Logistic Regression is preferred because of its slightly stronger overall results and simpler model structure. |
 
 ## e. Streamlit application
 
@@ -233,7 +251,7 @@ The application provides:
 1. Push the project files to a GitHub repository. Include `app.py`, `metrics_utils.py`, `requirements.txt`, `test_data.csv`, the `model/` artifacts, `.streamlit/config.toml`, `results/`, and this README.
 2. Open [Streamlit Community Cloud](https://streamlit.io/cloud) and create a new app from the GitHub repository.
 3. Select the repository, branch, and `app.py` as the application entry point.
-4. In **Advanced settings**, choose a Python version from the dropdown. The local training environment used Python 3.15.1. The pinned `numpy` release needs Python 3.12 or newer, so do not select an older version.
+4. In **Advanced settings**, choose a Python version from the dropdown. The local training environment used Python 3.14. The pinned `numpy` release needs Python 3.12 or newer, so do not select an older version.
 5. Deploy the app and test it by uploading `test_data.csv`.
 
 ## f. Reproducibility and limitations
